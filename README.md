@@ -5,6 +5,8 @@ Django/REST application with React
 
 #### Virtual Environment
 ```bash
+python3.8 -m venv venv
+pip install -r requirements.txt
 . venv/bin/activate
 ```
 

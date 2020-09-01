@@ -19,6 +19,13 @@ def customers_list(request):
     and links to the previous and next pages. Paginator is a built-in 
     Django class for paginating a list of data and providing accessor 
     methods for elements on each page.
+    
+    If it is a POST request, the method serializes the received client 
+    data and then calls the save () method using the serializer object. 
+    It then returns a Response object that is an HttpResponse instance 
+    with status code 201. Each view that is created is responsible for 
+    returning an HttpResponse object. The save () method saves the 
+    serialized data to the database.
     """
     if request.method == 'GET':
         data = []
@@ -55,14 +62,6 @@ def customers_list(request):
             'prevlink': '/api/customers/?page=' + str(previousPage)
         })
 
-    """
-    If it is a POST request, the method serializes the received client 
-    data and then calls the save () method using the serializer object. 
-    It then returns a Response object that is an HttpResponse instance 
-    with status code 201. Each view that is created is responsible for 
-    returning an HttpResponse object. The save () method saves the 
-    serialized data to the database.
-    """
     elif request.method == 'POST':
         serializer = CustomerSerializer(data=request.data)
 
@@ -80,7 +79,7 @@ def customers_list(request):
         )
 
 
-@api_view(['GET', 'PUT', 'DELETE']):
+@api_view(['GET', 'PUT', 'DELETE'])
 def customers_detail(request, pk):
     """
     Retrieve, update or delete a customer by id/pk.
@@ -93,6 +92,14 @@ def customers_detail(request, pk):
     """
     If it is a GET request, the client data is serialized and 
     sent using the Response object.
+
+    If it is a PUT request, the method creates a serializer for the new 
+    client data. It then calls the save () method of the created serializer 
+    object. Finally, it dispatches a Response object with the updated client data.
+
+    If it is a DELETE request, the method calls the delete () method of 
+    the customer object to delete it, and then returns a Response object 
+    containing no data.
     """
     if request.method == 'GET':
         serializer = CustomerSerializer(
@@ -102,11 +109,6 @@ def customers_detail(request, pk):
 
         return Response(serializer.data)
 
-    """
-    If it is a PUT request, the method creates a serializer for the new 
-    client data. It then calls the save () method of the created serializer 
-    object. Finally, it dispatches a Response object with the updated client data.
-    """
     elif request.method == 'PUT':
         serializer = CustomerSerializer(
             customer,
@@ -124,11 +126,6 @@ def customers_detail(request, pk):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    """
-    If it is a DELETE request, the method calls the delete () method of 
-    the customer object to delete it, and then returns a Response object 
-    containing no data.
-    """
     elif request.method == 'DELETE':
         customer.delete()
 
